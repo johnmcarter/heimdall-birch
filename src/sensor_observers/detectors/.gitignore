@@ -1,0 +1,8 @@
+# Ignore automatically generated cmake files
+cmake_install.cmake
+CMakeCache.txt
+CMakeFiles/
+Makefile
+backup*
+testing/
+BACKUP/
