@@ -7,6 +7,7 @@
  *
  *  Created By : ronin-zero (浪人ー無)
  *
+ *  Modified By : John Carter
  */
 
 #include <iostream>
@@ -173,6 +174,8 @@ std::string get_program_name( char* arg ){
 
 void start ( Command_Line_Parser & parser ){
 
+    std::cout << "Starting heimdall-birch, the new and improved heimdall syscall-sensor" << std::endl;
+
     std::string prog_name = parser.get_program_name();
 
     if ( is_running ( prog_name ) )
@@ -333,6 +336,7 @@ void stop ( Command_Line_Parser & parser ){
     }
     else
     {
+        std::cout << "Stopping heimdall-birch" << std::endl;
         int32_t fd;
 
         fd = open( pipe_name.c_str(), O_WRONLY );
