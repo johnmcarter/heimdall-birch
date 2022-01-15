@@ -2,39 +2,36 @@
  *  File Name : Daemonizer.cpp
  *  
  *  Creation Date : 06-24-2016
- *
- *  Last Modified : Sun 09 Apr 2017 02:17:04 PM EDT
+ *  Last modified: 2022/01/14 14:52:53
  *
  *  Created By : ronin-zero (浪人ー無)
- *
+ *  Modified by: John Carter
  */
 
 #include "daemonizer.h"
 
-void Daemonizer::launch_daemon( const std::string daemon_name, const std::string run_path ){
+const std::string error = "[\033[31mERROR\033[0m] ";
+const std::string info = "[\033[32mINFO\033[0m] ";
+
+
+void Daemonizer::launch_daemon( const std::string daemon_name, const std::string run_path ) {
 
     // Source: http://www.netzmafia.de/skripten/unix/linux-daemon-howto.html
 
     pid_t pid, sid;
-
     std::string aux;
 
-    /* Fork off of the parent process */
-
-    pid = fork();
-
-    if ( pid < 0 )
-    {
-        exit( EXIT_FAILURE );
-    }
-
-    /* If the PID is greater than 0,
+    /* 
+     * Run fork(): If the PID is greater than 0,
      * we successfully created a child process
-     * and can exit the parent successfully.
+     * and can exit the parent successfully. 
      */
 
-    if ( pid > 0 )
-    {   
+    pid = fork();
+    if ( pid < 0 ) {
+        exit( EXIT_FAILURE );
+    } 
+    if (pid > 0) {
         exit( EXIT_SUCCESS );
     }
 
@@ -81,12 +78,9 @@ void Daemonizer::write_log( const std::string file_name, const std::string conte
 
     std::ofstream process_file( file_name );
 
-    try
-    {
+    try {
         process_file << contents << std::endl;;
-    }
-    catch ( std::ofstream::failure &write_err )
-    {
+    } catch ( std::ofstream::failure &write_err ) {
         std::cerr << "Exception occurred: Could not write to file." << std::endl;
         std::cerr << "Filename: " << file_name << std::endl << std::endl;
         std::cerr << write_err.what() << std::endl << std::endl;

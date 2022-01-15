@@ -2,8 +2,8 @@
 
 # Author: John Carter
 # Created: 2021/12/15 18:47:43
-# Last modified: 2021/12/15 18:50:08
-# Install heimdall on a Raspberry Pi
+# Last modified: 2022/01/14 13:15:48
+# Install heimdall-birch on a Raspberry Pi
 
 
 RED=$'\e[1;31m'
@@ -25,11 +25,11 @@ fi
 echo "[${GRN}INFO${END}] Installing cmake"
 apt-get install cmake
 
-echo "[${GRN}INFO${END}] Entering directory '/home/pi/heimdall'"
-cd /home/pi/heimdall
+echo "[${GRN}INFO${END}] Entering directory '/home/pi/heimdall-birch'"
+cd /home/pi/heimdall-birch
+pwd
 
 echo "[${GRN}INFO${END}] Installing syscall-sensor"
 cmake -DCMAKE_BUILD_TYPE=Release .
 make -C syscall-sensor/
 make -C syscall-sensor install
-/usr/sbin

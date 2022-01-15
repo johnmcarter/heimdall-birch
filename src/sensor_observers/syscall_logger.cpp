@@ -160,16 +160,13 @@ void Syscall_Logger::process_data_point( Sensor_Data data ){
 
     std::string tmp_data = data.get_data();
     std::smatch syscall_fields;
-
-    if ( std::regex_match( tmp_data, syscall_fields, syscall_regex ) )
-    {
-        //Syscall_Record* syscall_record = new Syscall_Record( syscall_fields );
+    
+    if ( std::regex_match( tmp_data, syscall_fields, syscall_regex ) ) {
+        std::cout << "tmp" << tmp_data << std::endl;
         Syscall_Record syscall_record( syscall_fields );
+        std::cout << syscall_record << std::endl;
         send_data( syscall_record );
-        //delete( syscall_record );
-    }
-    else
-    {
+    } else {
         std::cerr << "Error!  Line didn't match regex.  Line: " << tmp_data << std::endl;
     }
 

@@ -54,11 +54,13 @@ Output_Stream::~Output_Stream(){
 // CHECK: I think this might be a problem.  I'm not sure why this is a pointer.
 // I'm going to try to pass it by value...
 
-void Output_Stream::process_data ( Data_Record& record ){
-
+void Output_Stream::process_data ( Data_Record& record ) {
+    // Writes each "record" or line of data to the output stream
     record.set_flags( flags );
     record.set_separator( separator );
 
+    std::cout << "process data " << record << std::endl;
+    exit(1);
     *out << record << '\n';
 }
 

@@ -1,12 +1,9 @@
 /*
  *  File Name : launcher.cpp
  *  
- *  Creation Date : 06-27-2016
- *
- *  Last Modified : Thu 20 Dec 2018 04:53:12 AM EST
- *
+ *  Created: 2021/12/15 18:31:55
+ *  Last modified: 2022/01/14 15:01:42
  *  Created By : ronin-zero (浪人ー無)
- *
  *  Modified By : John Carter
  */
 
@@ -26,6 +23,8 @@
 std::vector<std::string> opt_flags = { "-n", "-p", "-c", "-f", "-t", "-s", "-a", };
 
 const std::string pipe_name = "/var/run/sensor.pipe";
+const std::string error = "[\033[31mERROR\033[0m] ";
+const std::string info = "[\033[32mINFO\033[0m] ";
 
 std::string flag_string( uint_fast8_t flags );
 //std::string get_program_name( char* arg );
@@ -173,25 +172,18 @@ std::string get_program_name( char* arg ){
 }
 
 void start ( Command_Line_Parser & parser ){
-
-    std::cout << "Starting heimdall-birch, the new and improved heimdall syscall-sensor" << std::endl;
-
+    /* Start the syscall-sensor */
+    std::cout << std::endl;
+    std::cout << "\033[1m\033[96mheimdall-birch: the new and improved heimdall syscall-sensor.\033[0m" << std::endl << std::endl;
     std::string prog_name = parser.get_program_name();
 
-    if ( is_running ( prog_name ) )
-    {
-
+    if ( is_running ( prog_name ) ) {
         pid_t pid = Daemonizer::get_daemon_pid( prog_name );
-
-        std::cout << prog_name << " is already running with PID " << pid << std::endl;
-
-    }
-    else
-    {
+        std::cout << info << prog_name << " is already running with PID: " << pid << std::endl;
+    } else {
         // mkfifo returns 0 upon success and -1 upon failure.  We only want to continue
         // if the command succeeds.  It will fail if run without sudo or root permissions.
         // see 'man 3 mkfifo' for more information.
-
 
         uint_fast8_t flags = 0x00;
         std::string out_file_name = "trace.log";
@@ -221,9 +213,8 @@ void start ( Command_Line_Parser & parser ){
             }
         }
 
-        if ( !run_daemon || mkfifo ( pipe_name.c_str(), 0666 ) == 0 )
-        {
-
+        if ( !run_daemon || mkfifo ( pipe_name.c_str(), 0666 ) == 0 ) {
+            
             if (  !parser.contains_option( "--flags=" ) && !parser.contains_any( opt_flags ) )
             {
                 flags = TIMESTAMP | PROCESS_NAME | PID | SYSCALL_NUM;
@@ -285,20 +276,14 @@ void start ( Command_Line_Parser & parser ){
                 separator = parser.get_option_string( parser.arg_at ( parser.option_index ("--separator=") ) );
             }
 
+            std::cout << info << "You chose to print to file: " << out_file_name << std::endl;
+            std::cout << info << "You chose to use separator: " << separator << std::endl;
+            std::cout << info << "You set your flags to be : " << (int)flags << " -- " << flag_string( flags ) << std::endl;
 
-
-
-            std::cout << "You chose to print to file: " << out_file_name << std::endl;
-            std::cout << "You chose to use separator: " << separator << std::endl;
-            std::cout << "You set your flags to be : " << (int)flags << " -- " << flag_string( flags ) << std::endl;
-
-            if ( run_daemon )
-            {
-                std::cout << "Sensor will be run as a daemon." << std::endl;
-            }
-            else
-            {
-                std::cout << "Daemonization disabled.  Sensor will be run as a regular application." << std::endl;
+            if ( run_daemon ) {
+                std::cout << info << "Sensor will be run as a daemon." << std::endl;
+            } else {
+                std::cout << info << "Sensor will be run as a regular application." << std::endl;
             }
 
             Sensor_Manager manager( flags, out_file_name, separator, prog_name );
@@ -306,86 +291,58 @@ void start ( Command_Line_Parser & parser ){
             manager.run_sensor( run_daemon );
 
             std::cout << "From launcher, manager has finished run_sensor." << std::endl;
-        }
-        else
-        {
-            std::cerr << "ERROR: Sensor could not be started." << std::endl;
-            std::cerr << "Reason: Trace pipe could not be opened at " << pipe_name << "." << std::endl;
+        } else {
+            std::cerr << error << "Sensor could not be started: Trace pipe could not be opened at " << pipe_name << "." << std::endl;
             std::cerr << "NOTE: You may need root permission or sudo." << std::endl;
         }
     }
 }
 
 void status ( Command_Line_Parser & parser ){
-
-    if ( is_running( parser.get_program_name() ) )
-    {
-        std::cout << "The sensor is running with PID " << Daemonizer::get_daemon_pid( parser.get_program_name() ) << std::endl;
-    }
-    else
-    {
-        std::cout << "The sensor is not running." << std::endl;
+    /* Return the status of the syscall-sensor */
+    if ( is_running( parser.get_program_name() ) ) {
+        std::cout << info << "The sensor is running with PID " << Daemonizer::get_daemon_pid( parser.get_program_name() ) << std::endl;
+    } else {
+        std::cout << info << "The sensor is not running." << std::endl;
     }
 }
 
 void stop ( Command_Line_Parser & parser ){
+    /* Stop the syscall-sensor */
 
-    if ( !is_running( parser.get_program_name() ) )
-    {
-        std::cout << "The sensor is not running." << std::endl;
-    }
-    else
-    {
-        std::cout << "Stopping heimdall-birch" << std::endl;
-        int32_t fd;
-
-        fd = open( pipe_name.c_str(), O_WRONLY );
-
+    if ( !is_running( parser.get_program_name() ) ) {
+        std::cout << error << "syscall-sensor stop failed: The sensor is not running." << std::endl;
+    } else {
+        int32_t fd = open( pipe_name.c_str(), O_WRONLY );
         std::string stop = "STOP";
-
         const char* c_stop = stop.c_str();
 
-        if ( !write( fd, c_stop, sizeof( c_stop ) ) )
-        {
-            std::cerr << "ERROR: Couldn't write to " << pipe_name << " -- perhaps you need root/sudo?" << std::endl;
-        }
-        else
-        {
-            // FIXME: This error checking was hacked in QUICKLY, hence the bad variable names
-            // like "tmp_result" and the magic numbers and things.
+        if ( !write( fd, c_stop, sizeof( c_stop ) ) ) {
+            std::cerr << error << "Couldn't write to " << pipe_name << " -- perhaps you need root/sudo?" << std::endl;
+        } else {
+            int32_t rc = close( fd );
 
-            int32_t tmp_result = close( fd );
-
-
-            if ( tmp_result != 0 )
-            {
-                std::cerr << "ERROR: Could not close the file descriptor for pipe: " << pipe_name << std::endl;
-            }
-            else
-            {
-                std::cout << "File descriptor for " << pipe_name << " closed successfully." << std::endl;
+            if ( rc != 0 ) {
+                std::cerr << error << "close() failed for pipe: " << pipe_name << " with rc: " << rc << std::endl;
+            } else {
+                std::cout << info << "File descriptor for " << pipe_name << " closed successfully." << std::endl;
             }
 
-            tmp_result = unlink( pipe_name.c_str() );
+            rc = unlink( pipe_name.c_str() );
 
-            if ( tmp_result != 0 )
-            {
-                std::cerr << "ERROR: Could not unlink file " << pipe_name << std::endl;
-            }
-            else
-            {
-                std::cout << "File " << pipe_name << " unlinked successfully." << std::endl;
+            if ( rc != 0 ) {
+                std::cerr << error << "unlink() failed for pipe: " << pipe_name << " with rc: " << rc << std::endl;
+            } else {
+                std::cout << info << "File " << pipe_name << " unlinked successfully." << std::endl;
             }
 
-            tmp_result = Daemonizer::remove_daemon_pid( parser.get_program_name() );
+            rc = Daemonizer::remove_daemon_pid( parser.get_program_name() );
 
-            if ( tmp_result != 0 )
-            {
-                std::cerr << "ERROR: Could not remove pid for program " << parser.get_program_name() << std::endl;
-            }
-            else
-            {
-                std::cout << "Program " << parser.get_program_name() << " pid removed." << std::endl;
+            if ( rc != 0 ) {
+                std::cerr << error << "Could not remove pid for program " << parser.get_program_name() << std::endl;
+                std::cout << error << "remove_daemon_pid() returned rc: " << rc << std::endl;
+            } else {
+                std::cout << info << parser.get_program_name() << " pid removed." << std::endl;
             }
         }
     }

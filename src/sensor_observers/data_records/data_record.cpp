@@ -16,6 +16,7 @@ Data_Record::Data_Record( const std::smatch matches, uint_fast8_t settings_flags
     record_fields = matches;
     flags = settings_flags;
     separator = sep;
+    std::cout << "data record " << raw_string() << std::endl;
 }
 
 std::string Data_Record::raw_string() const{
@@ -46,7 +47,7 @@ string Data_Record::get_separator(){
 // This must be defined like this in order to have polymorphic behavior of <<
 
 std::ostream& operator<<( std::ostream& s_out, Data_Record const& record ){
-
+        
         record.print( s_out );
         return s_out;
 }
@@ -56,6 +57,6 @@ std::ostream& operator<<( std::ostream& s_out, Data_Record const& record ){
 // It just prints out the raw data. 
 
 void Data_Record::print( std::ostream& s_out ) const{
-
+    
     s_out << raw_string();
 }

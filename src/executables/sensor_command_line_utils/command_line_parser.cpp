@@ -1,15 +1,16 @@
 /*
  *  File Name : command_line_parser.cpp
  *  
- *  Creation Date : 06-27-2016
- *
- *  Last Modified : Tue 07 Mar 2017 05:53:17 PM EST
- *
+ *  Created: 2021/12/15 18:31:55
+ *  Last modified: 2022/01/14 13:54:37
  *  Created By : ronin-zero (浪人ー無)
- *
+ *  Modified by: John Carter
  */
 
 #include "command_line_parser.h"
+
+const std::string error = "[\033[31mERROR\033[0m] ";
+const std::string info = "[\033[32mINFO\033[0m] ";
 
 Command_Line_Parser::Command_Line_Parser( int argc, char** argv ) : arg_flags( { "-o", "-n", "-p", "-c", "-f", "-t", "-s", "-a", "-h"} ),
                                                                     opt_flags( { "--separator=", "--flags=", "--daemon=" } ),
@@ -150,10 +151,10 @@ std::string Command_Line_Parser::get_option_string( std::string arg ){
    }*/
 
 void Command_Line_Parser::print_help(){
+    std::cout << std::endl;
+    std::cout << "\033[1m\033[96mheimdall-birch: the new and improved heimdall syscall-sensor.\033[0m" << std::endl << std::endl;
 
-    std::cout << "HEIMDALL syscall-sensor" << std::endl << std::endl;
-
-    std::cout << "v 1.0.0" << std::endl << std::endl;
+    std::cout << "v 1.0.1" << std::endl << std::endl;
 
     std::cout << "DESCRIPTION" << std::endl << std::endl;
 
@@ -421,17 +422,18 @@ void Command_Line_Parser::print_help(){
 
     std::cout << std::string( 8, ' ' ) << "Please report bugs to:" << std::endl << std::endl;
 
-    std::cout << std::string( 11, ' ' ) << "ronin-zero@github.com" << std::endl << std::endl;
+    std::cout << std::string( 11, ' ' ) << "jmc683@drexel.edu" << std::endl << std::endl;
 
-    std::cout << std::string( 8, ' ' ) << "The project's main repository can be found at:" << std::endl << std::endl;
-    std::cout << std::string( 11, ' ' ) << "https://github.com/ronin-zero/heimdall" << std::endl << std::endl;
+    std::cout << std::string( 8, ' ' ) << "The project's maintained repository can be found at:" << std::endl << std::endl;
+    std::cout << std::string( 11, ' ' ) << "https://github.com/johnmcarter/heimdall-birch.git" << std::endl << std::endl;
 
-    std::cout << "Written by: 浪人ー無, 2016" << std::endl << std::endl;
+    std::cout << "Originally written by: 浪人ー無, 2016" << std::endl;
+    std::cout << "Updated and Maintained by: John Carter, 2021-" << std::endl << std::endl;
 }
 
 void Command_Line_Parser::print_usage(){
 
-    std::cout << std::endl << "USAGE:" << std::endl;
+    std::cout << std::endl << info << "USAGE:" << std::endl;
     std::cout << std::string( 8, ' ' ) << "syscall-sensor COMMAND [OPTIONS]" << std::endl << std::endl;
 
     std::cout << std::string( 8, ' ' ) << "COMMANDs" << std::endl << std::endl;

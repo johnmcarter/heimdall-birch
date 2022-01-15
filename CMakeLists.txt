@@ -1,6 +1,6 @@
 cmake_minimum_required ( VERSION 3.0 )
 
-project (Heimdall)
+project (Heimdall-birch)
 
 set( SYSCALL_SENSOR_DIR "${CMAKE_SOURCE_DIR}/syscall-sensor" )
 set( SYSCALL_DETECTOR_DIR "${CMAKE_SOURCE_DIR}/syscall-detector" )

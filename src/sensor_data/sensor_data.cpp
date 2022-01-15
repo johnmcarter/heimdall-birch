@@ -52,7 +52,7 @@ string Sensor_Data::get_data_label() const{
 }
 
 string Sensor_Data::get_data() const{
-
+    
     return data_;
 }
 

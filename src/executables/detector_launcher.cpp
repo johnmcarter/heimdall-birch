@@ -656,7 +656,6 @@ void start ( Command_Line_Parser & parser ){
 
 
 
-
         std::cout << "You chose to print to file: " << out_file_name << std::endl;
 
         if ( run_daemon )
