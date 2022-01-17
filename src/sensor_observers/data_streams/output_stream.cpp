@@ -55,12 +55,10 @@ Output_Stream::~Output_Stream(){
 // I'm going to try to pass it by value...
 
 void Output_Stream::process_data ( Data_Record& record ) {
-    // Writes each "record" or line of data to the output stream
+    // Writes each "record" or line of data to the output file specified
     record.set_flags( flags );
     record.set_separator( separator );
 
-    std::cout << "process data " << record << std::endl;
-    exit(1);
     *out << record << '\n';
 }
 
