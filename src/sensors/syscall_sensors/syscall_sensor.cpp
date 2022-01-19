@@ -29,16 +29,6 @@ Syscall_Sensor * Syscall_Sensor::get_instance( uint_fast8_t flags ){
 
     return ss_instance;
 }
-/*
-Syscall_Sensor * Syscall_Sensor::get_instance(){
-
-    if ( !ss_instance )
-    {
-        ss_instance = new Syscall_Sensor();
-    }
-
-    return ss_instance;
-}*/
 
 // Deconstructor
 

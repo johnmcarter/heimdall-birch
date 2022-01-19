@@ -1,12 +1,10 @@
 /*
  *  File Name : sensor.h
  *  
- *  Creation Date : 05-09-2016
- *
- *  Last Modified : Fri 05 Oct 2018 04:28:46 AM EDT
- *
+ *  Created: 2022/01/18 10:14:50
+ *  Last modified: 2022/01/18 21:20:58
  *  Created By : ronin-zero (浪人ー無)
- *
+ *  Modified by: John Carter
  */
 
 #pragma once
@@ -17,7 +15,7 @@
 
 #include "sensor_data/sensor_data.h"
 #include "sensor_observers/sensor_observer.h"
-#include "queues/readerwriterqueue.h"
+#include "utils/readerwriterqueue.h"
 
 typedef moodycamel::ReaderWriterQueue<Sensor_Data> queue;
 
@@ -26,7 +24,6 @@ using std::thread;
 // Sensor constants
 static const uint_fast8_t SENSING_OFF   = 0x00;
 static const uint_fast8_t SENSING_ON    = 0x01;
-//static const uint_fast32_t SENSOR_QUEUE_SIZE = 100; // CHECK: This is entirely arbitrary right now. If something works better, it will be changed. CURRENTLY UNUSED.
 
 class Sensor {
 

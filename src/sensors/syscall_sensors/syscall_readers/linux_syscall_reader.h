@@ -38,7 +38,7 @@ static const uint_fast8_t MIN_LENGTH = 50;  // This is the FUNCTION_INDEX (see: 
                                             // will have a function in it, so there will be something at index 50 and beyond, so if it's less
                                             // than 50 characters long, just ignore it.
 
-class Linux_Syscall_Reader:public Syscall_Reader{
+class Linux_Syscall_Reader:public Syscall_Reader {
 
     public:
 
@@ -48,11 +48,6 @@ class Linux_Syscall_Reader:public Syscall_Reader{
 
         uint_fast8_t set_reading( bool on );
 
-        // CHECK: Shawn feels these toggle methods
-        // are unnecessary and I feel he's right.
-        // I'm taking them out for the time being.
-
-        //uint_fast8_t toggle_reading();
         uint_fast8_t start_reading();
         uint_fast8_t stop_reading();
 
@@ -67,8 +62,6 @@ class Linux_Syscall_Reader:public Syscall_Reader{
         uint_fast8_t configure( uint_fast8_t flags );
 
         void update_filter();
-
-        // I need this to be a pointer to check for nullity.
 
         Sensor_Data * read_syscall();
 

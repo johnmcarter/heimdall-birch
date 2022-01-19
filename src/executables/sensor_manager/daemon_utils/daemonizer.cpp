@@ -2,16 +2,14 @@
  *  File Name : Daemonizer.cpp
  *  
  *  Creation Date : 06-24-2016
- *  Last modified: 2022/01/14 14:52:53
+ *  Last modified: 2022/01/18 22:41:45
  *
  *  Created By : ronin-zero (浪人ー無)
  *  Modified by: John Carter
  */
 
 #include "daemonizer.h"
-
-const std::string error = "[\033[31mERROR\033[0m] ";
-const std::string info = "[\033[32mINFO\033[0m] ";
+#include "utils/constants.h"
 
 
 void Daemonizer::launch_daemon( const std::string daemon_name, const std::string run_path ) {
@@ -48,16 +46,11 @@ void Daemonizer::launch_daemon( const std::string daemon_name, const std::string
     /* Create a new SID for the child process */
     sid = setsid();
 
-    if ( sid < 0 )
-    {
-        /* Log any failures here */
+    if ( sid < 0 ) {
         exit( EXIT_FAILURE );
     }
 
-    /* Change the current working directory to root */
-    if ( ( chdir( "/" ) ) < 0 )
-    {
-        /* Log any failures here */
+    if ( ( chdir( "/" ) ) < 0 ) {
         exit( EXIT_FAILURE );
     }
 
@@ -74,7 +67,7 @@ void Daemonizer::launch_daemon( const std::string daemon_name, const std::string
 #endif
 }
 
-void Daemonizer::write_log( const std::string file_name, const std::string contents ){
+void Daemonizer::write_log( const std::string file_name, const std::string contents ) {
 
     std::ofstream process_file( file_name );
 
@@ -90,14 +83,13 @@ void Daemonizer::write_log( const std::string file_name, const std::string conte
     process_file.close();
 }
 
-pid_t Daemonizer::get_daemon_pid( const std::string daemon_name, const std::string run_path ){
+pid_t Daemonizer::get_daemon_pid( const std::string daemon_name, const std::string run_path ) {
 
     pid_t pid = -1;
 
     std::ifstream daemon_file( run_path + daemon_name + ".pid" );
 
-    if ( daemon_file.good() )
-    {
+    if ( daemon_file.good() ) {
         daemon_file >> pid;
         daemon_file.close();
     }
@@ -115,27 +107,20 @@ bool Daemonizer::get_fds( pid_t daemon_pid, int32_t fds[2], const std::string ru
     std::string command = "ls " + run_path + std::to_string( daemon_pid ) + "/fd/";
     std::string mode = "r";
 
-    // std::string result = "";
-
     FILE* pipe = popen( command.c_str(), mode.c_str() );
 
     std::string tmp_num = "";
     uint_fast8_t tmp_char = 0;
 
-    while ( !feof( pipe ) )
-    {
+    while ( !feof( pipe ) ) {
         tmp_char = fgetc ( pipe );
 
-        if ( tmp_char == '\n' && tmp_num.length() > 0 )
-        {
+        if ( tmp_char == '\n' && tmp_num.length() > 0 ) {
             std::cout << "tmp_num is " << tmp_num << std::endl;
             fds[0] = fds[1];
             fds[1] = stoi( tmp_num );
-            tmp_num = "";
-            
-        }
-        else if ( tmp_char > '0' && tmp_char < '9' )
-        {
+            tmp_num = ""; 
+        } else if ( tmp_char > '0' && tmp_char < '9' ) {
             tmp_num += tmp_char;
         }
     }

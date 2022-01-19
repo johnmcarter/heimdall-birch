@@ -46,11 +46,8 @@ class Command_Line_Parser{
 
         void print_help();
         void print_usage();
-
         void print_args();
-
         bool check_args();
-        //void parse_args( uint_fast32_t argc, char** argv );
 
     private:
 

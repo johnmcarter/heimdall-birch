@@ -45,8 +45,7 @@ class Output_Stream : public Data_Stream{
 
     private:
 
-        bool needs_delete;  // The constructor that takes a string as an argument allocates memory.  It sets this value to true.
-                            // The deconstructor checks if this is true and if it is, deletes "out."
+        bool needs_delete;  
 
         string separator;
         uint_fast8_t flags;

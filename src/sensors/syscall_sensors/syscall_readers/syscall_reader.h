@@ -36,10 +36,6 @@ class Syscall_Reader{
 
         virtual uint_fast8_t set_reading( bool on ) = 0;
 
-        // CHECK: Shawn feels these toggle methods are
-        // unnecessary.  I agree.
-        
-        // virtual uint_fast8_t toggle_reading() = 0;
         virtual uint_fast8_t start_reading() = 0;
         virtual uint_fast8_t stop_reading() = 0;
 

@@ -2,7 +2,7 @@
  *  File Name : command_line_parser.cpp
  *  
  *  Created: 2021/12/15 18:31:55
- *  Last modified: 2022/01/14 13:54:37
+ *  Last modified: 2022/01/18 22:42:53
  *  Created By : ronin-zero (浪人ー無)
  *  Modified by: John Carter
  */
@@ -16,15 +16,12 @@ Command_Line_Parser::Command_Line_Parser( int argc, char** argv ) : arg_flags( {
                                                                     opt_flags( { "--separator=", "--flags=", "--daemon=" } ),
                                                                     commands( { "start", "stop", "status" } ){
 
-    if ( argc <= 0 )
-    {
-        std::cerr << "ERROR: There are no arguments.  Please check your main program." << std::endl;
-    }
-    else
-    {
+    if ( argc <= 0 ) {
+        std::cerr << error << "There are no arguments.  Please check your main program." << std::endl;
+    } else {
         program_name = parse_program_name( argv[0] );
 
-        for ( int i = 1; i < argc; i++ ){
+        for ( int i = 1; i < argc; i++ ) {
 
             // Convert each char* in argv into a std::string...
             std::string tmp( argv[i] );
@@ -135,22 +132,7 @@ std::string Command_Line_Parser::get_option_string( std::string arg ){
     return opt_string;
 }
 
-/*
-   void Command_Line_Parser::parse_args( uint_fast32_t argc, char** argv ){
-
-   std::cout << "Number of arguments: " << argc << std::endl;
-
-   std::cout << "They are as follows: " << std::endl;
-
-   for ( uint_fast32_t i = 0; i < argc; i++ )
-   {
-   std::cout << "arg" << i << ": " << argv[i] << "  ";
-   }
-
-   std::cout << std::endl;
-   }*/
-
-void Command_Line_Parser::print_help(){
+void Command_Line_Parser::print_help() {
     std::cout << std::endl;
     std::cout << "\033[1m\033[96mheimdall-birch: the new and improved heimdall syscall-sensor.\033[0m" << std::endl << std::endl;
 
@@ -431,12 +413,13 @@ void Command_Line_Parser::print_help(){
     std::cout << "Updated and Maintained by: John Carter, 2021-" << std::endl << std::endl;
 }
 
-void Command_Line_Parser::print_usage(){
 
-    std::cout << std::endl << info << "USAGE:" << std::endl;
+void Command_Line_Parser::print_usage() {
+
+    std::cout << std::endl << "USAGE:" << std::endl;
     std::cout << std::string( 8, ' ' ) << "syscall-sensor COMMAND [OPTIONS]" << std::endl << std::endl;
 
-    std::cout << std::string( 8, ' ' ) << "COMMANDs" << std::endl << std::endl;
+    std::cout << std::string( 8, ' ' ) << "COMMANDS" << std::endl << std::endl;
     std::cout << std::string( 11, ' ' ) << std::setw(40) << std::setfill(' ') << std::left << "start" << "start the sensor with [OPTIONS]" << std::endl;
 
     std::cout << std::string( 11, ' ' ) << std::setw(40) << std::setfill(' ') << std::left << "stop" << "stop the sensor" << std::endl;
@@ -484,6 +467,7 @@ void Command_Line_Parser::print_usage(){
     std::cout << "such as \'less\' for ease of reading.  Example: \'syscall-sensor -h | less\')." << std::endl;
 }
 
+
 // This function is to make sure that pairs of quotes are balanced.
 // The user can specify any char at runtime, but the intention is
 // to check for quotes.
@@ -494,8 +478,7 @@ bool Command_Line_Parser::check_balance( std::string input, int_fast8_t q ){
     // If it's only one character long, it can't be a quotation mark.
     // If it's 0 characters long, it's not worth checking the rest.
 
-    if ( input_length > 2 )
-    {
+    if ( input_length > 2 ) {
 
         int_fast32_t first_index = input.find( q );
         int_fast32_t second_index = input.rfind( q );
@@ -515,22 +498,9 @@ std::string Command_Line_Parser::sanitize_input( std::string input ){
 
     std::string sanitized = "";
 
-    if ( check_balance( input, '"' ) )
-    {
+    if ( check_balance( input, '"' ) ) {
         sanitized = strip_endpoints( input );
-    }
-/*    else if ( check_balance( input, '\'' ) )
-    {
-        sanitized = strip_endpoints( input );
-        
-        if ( sanitized.length() > 2 )
-        {
-            sanitized = "";
-        }
-        
-    }*/
-    else
-    {
+    } else {
         sanitized = input;
     }
     std::cout << "Sanitized string is " << sanitized << std::endl;
@@ -540,17 +510,12 @@ std::string Command_Line_Parser::sanitize_input( std::string input ){
 std::string Command_Line_Parser::replace_tab_char( std::string input ){
 
     std::string output = "";
-
     std::string tab_char = "\\t";
-
     std::size_t tab_index = input.find( "\\t" );
 
-    if ( tab_index == std::string::npos )
-    {
+    if ( tab_index == std::string::npos ) {
         output = input;
-    }
-    else
-    {
+    } else {
         output += input.substr( 0, tab_index );
         output += '\t';
         output += replace_tab_char( input.substr( tab_index + 2 ) );
@@ -562,26 +527,19 @@ std::string Command_Line_Parser::replace_tab_char( std::string input ){
 std::string Command_Line_Parser::parse_program_name( char* arg ){
 
     std::string name( arg );
-
     std::string dot_slash = "./";
-
     std::size_t slash_pos = name.find( dot_slash );
 
-    if ( slash_pos == std::string::npos )
-    {
+    if ( slash_pos == std::string::npos ) {
         return name;
-    }
-
-    else
-    {
+    } else {
         return name.substr( slash_pos + dot_slash.length() );
     }
 }
 
 void Command_Line_Parser::print_args(){
 
-    for ( uint_fast32_t i = 0; i < arguments.size(); i++ )
-    {
+    for ( uint_fast32_t i = 0; i < arguments.size(); i++ ) {
         std::cout << "Arg #" << i << ": " << arguments[i] << std::endl;
     }
 }
@@ -590,38 +548,26 @@ bool Command_Line_Parser::check_args(){
 
     uint_fast32_t commands = 0;
     uint_fast32_t errors = 0;
-
     bool valid_args = true;
-
     std::vector<uint_fast32_t> bad_args;
 
-    for ( uint_fast32_t i = 0; i < arguments.size(); i++ )
-    {
-        if ( valid_command( arguments[i] ) )
-        {
+    for ( uint_fast32_t i = 0; i < arguments.size(); i++ ) {
+        if ( valid_command( arguments[i] ) ) {
             commands++;
-        }
-        else if ( !( valid_option( arguments[i] ) || valid_arg( arguments[i] ) ) )
-        {
-            if ( i > 0 && arguments[ i -1 ] != "-o" )
-            {
+        } else if ( !( valid_option( arguments[i] ) || valid_arg( arguments[i] ) ) ) {
+            if ( i > 0 && arguments[ i -1 ] != "-o" ) {
                 errors++;
                 bad_args.push_back(i);
             }
         }
     }
 
-    if ( commands != 1 )
-    {
+    if ( commands != 1 ) {
         errors++;
     }
 
-    if ( errors > 0 )
-    {
-        valid_args = false;
-
-        std::cerr << "ERROR: " << errors << " errors in arguments." << std::endl;
-        
+    if ( errors > 0 ) {
+        valid_args = false;        
         print_malformed_args( bad_args, commands );
     }
 
@@ -630,10 +576,8 @@ bool Command_Line_Parser::check_args(){
 
 bool Command_Line_Parser::valid_command( std::string input ){
 
-    for ( uint_fast32_t i = 0; i < commands.size(); i++ )
-    {
-        if ( input == commands[i] )
-        {
+    for ( uint_fast32_t i = 0; i < commands.size(); i++ ) {
+        if ( input == commands[i] ) {
             return true;
         }
     }
@@ -643,10 +587,8 @@ bool Command_Line_Parser::valid_command( std::string input ){
 
 bool Command_Line_Parser::valid_option( std::string input ){
 
-    for ( uint_fast32_t i = 0; i < opt_flags.size(); i++ )
-    {
-        if ( input.find( opt_flags[i] ) == 0 && opt_flags[i].length() < input.length() )
-        {
+    for ( uint_fast32_t i = 0; i < opt_flags.size(); i++ ) {
+        if ( input.find( opt_flags[i] ) == 0 && opt_flags[i].length() < input.length() ) {
             return true;
         }
     }
@@ -656,10 +598,8 @@ bool Command_Line_Parser::valid_option( std::string input ){
 
 bool Command_Line_Parser::valid_arg( std::string input ) {
 
-    for ( uint_fast32_t i = 0; i < arg_flags.size(); i++  )
-    {
-        if ( input == arg_flags[i] )
-        {
+    for ( uint_fast32_t i = 0; i < arg_flags.size(); i++  ) {
+        if ( input == arg_flags[i] ) {
             return true;
         }
     }
@@ -667,56 +607,40 @@ bool Command_Line_Parser::valid_arg( std::string input ) {
     return false;
 }
 
-void Command_Line_Parser::print_malformed_args( std::vector<uint_fast32_t> malformed_args, uint_fast32_t num_cmds ){
-
-    if ( num_cmds == 0 )
-    {
-        std::cerr << "ERROR: No commands (start/status/stop) given." << std::endl;
+void Command_Line_Parser::print_malformed_args(std::vector<uint_fast32_t> malformed_args, uint_fast32_t num_cmds) {
+    // Prints a reason for invocation being rejects
+    if ( num_cmds == 0 ) {
+        std::cerr << error << "No command (start/status/stop) given." << std::endl;
     }
     
-    if ( num_cmds > 1 )
-    {
-        std::cerr << "ERROR: Too many commands. Only one start/status/stop command may be given." << std::endl;
+    if ( num_cmds > 1 ) {
+        std::cerr << error << "Only one command (start/status/stop) may be given." << std::endl;
     }
 
-    for ( uint_fast32_t i = 0; i < malformed_args.size(); i++ )
-    {
+    for ( uint_fast32_t i = 0; i < malformed_args.size(); i++ ) {
         std::string tmp_arg = arguments[ malformed_args[i] ];
 
-        std::cerr << "ERROR - Bad argument #" << i << " as argument " << malformed_args[i] << std::endl;
+        std::cerr << error << "Bad argument #" << i << " as argument " << malformed_args[i] << std::endl;
 
-        if ( tmp_arg.length() <= 2 )
-        {
+        if ( tmp_arg.length() <= 2 ) {
             std::cerr << "Unrecognized argument \"" << tmp_arg << "\"" << std::endl;
-        }
-        else if ( tmp_arg.find( "--separator=" ) != std::string::npos )
-        {
+        } else if ( tmp_arg.find( "--separator=" ) != std::string::npos ) {
             std::string option = tmp_arg.substr( tmp_arg.find('=') + 1 );
 
-            if ( option.length() < 1 )
-            {
+            if ( option.length() < 1 ) {
                 std::cerr << "--separator requires an argument." << std::endl;
-            }
-            else
-            {
+            } else {
                 std::cerr << option << " is not a valid argument for option --separator" << std::endl;
             }
-        }
-        else if ( tmp_arg.find( "--flags=" ) != std::string::npos )
-        {
+        } else if ( tmp_arg.find( "--flags=" ) != std::string::npos ) {
             std::string option = tmp_arg.substr( tmp_arg.find('=') + 1 );
 
-            if ( option.length() < 1 || ( !ASCII_Operations::is_hex_byte( option ) && !ASCII_Operations::is_number( option ) ) )
-            {
+            if ( option.length() < 1 || ( !ASCII_Operations::is_hex_byte( option ) && !ASCII_Operations::is_number( option ) ) ) {
                 std::cerr << "--flags requires an argument of either a decimal or hexidecimal number between 0 and 255 (inclusive)" << std::endl;
-            }
-            else
-            {
+            } else {
                 std::cerr << "Argument \"" << option << "\" to option --flags is malformed." << std::endl;
             }
-        }
-        else
-        {
+        } else {
             std::cerr << "Unspecified problem with argument " << tmp_arg << std::endl;
         }
     }

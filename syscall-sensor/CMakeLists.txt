@@ -4,9 +4,9 @@ project (Heimdall)
 
 set( targetname "syscall-sensor" )
 
-message( "At the start, our CMAKE_CXX_FLAGS are: ${CMAKE_CXX_FLAGS}" )
-message( "At the start, our CMAKE_CXX_FLAGS_DEBUG are: ${CMAKE_CXX_FLAGS_DEBUG}" )
-message( "At the start, our CMAKE_CXX_FLAGS_RELEASE are: ${CMAKE_CXX_FLAGS_RELEASE}" )
+message( "Initially our CMAKE_CXX_FLAGS are: ${CMAKE_CXX_FLAGS}" )
+message( "Initially our CMAKE_CXX_FLAGS_DEBUG are: ${CMAKE_CXX_FLAGS_DEBUG}" )
+message( "Initially our CMAKE_CXX_FLAGS_RELEASE are: ${CMAKE_CXX_FLAGS_RELEASE}" )
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-copy -Wfatal-errors -Wall -Wextra -Werror -pedantic -std=c++11 -pthread ${MY_FLAGS}" )
 
@@ -15,10 +15,6 @@ message( "After modifying them, our CMAKE_CXX_FLAGS are: ${CMAKE_CXX_FLAGS}" )
 set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-parameter -Wno-unused-variable -O0 -ggdb -DDEBUG_COUT ${MY_FLAGS}" )
 
 message( "After modifying them, our CMAKE_CXX_FLAGS_DEBUG are: ${CMAKE_CXX_FLAGS_DEBUG}" )
-
-#set( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
-
-#set( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} ${CMAKE_CXX_FLAGS}" )
 
 message( "CMAKE_SOURCE_DIR is: ${CMAKE_SOURCE_DIR}" )
 
@@ -37,7 +33,6 @@ set( UTILS "${SOURCE_DIR}utils/" )
 
 if( CMAKE_BUILD_TYPE STREQUAL "Debug" )
     message( "===DEBUG MODE===" )
-    #set( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wno-unused-parameter -Wno-unused-variable" )
 elseif( CMAKE_BUILD_TYPE STREQUAL "Release" )
     message( "===RELEASE MODE===" )
 else()
@@ -62,8 +57,6 @@ message( "CXX Flags: ${CMAKE_CXX_FLAGS}" )
 message( "CXX Debug Flags: ${CMAKE_CXX_FLAGS_DEBUG}" )
 message( "CXX Release Flags: ${CMAKE_CXX_FLAGS_RELEASE}" )
 message( "CMake Shared Linker Flags: ${CMAKE_SHARED_LINKER_FLAGS}" )
-
-message( "Just seeing if this is a thing: ${CXXFLAGS}" )
 
 set( SOURCE "" )
 

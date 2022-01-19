@@ -2,23 +2,20 @@
  *  File Name : linux_syscall_reader.cpp
  *  
  *  Creation Date : 05-09-2016
- *
- *  Last Modified : Fri 07 Dec 2018 11:11:47 PM EST
+ *  Last modified: 2022/01/18 23:18:10
  *
  *  Created By : ronin-zero (浪人ー無)
- *
+ *  Modified by: John Carter
  */
 
-//#include <sstream>      // Probably not needed...
-
 #include "linux_syscall_reader.h"
+#include "utils/constants.h"
 
 Linux_Syscall_Reader * Linux_Syscall_Reader::lsr_instance = NULL;
 
 Linux_Syscall_Reader * Linux_Syscall_Reader::get_instance(){
 
-    if ( !lsr_instance )
-    {
+    if ( !lsr_instance ) {
         lsr_instance = new Linux_Syscall_Reader();
     }
 
@@ -34,10 +31,8 @@ Linux_Syscall_Reader * Linux_Syscall_Reader::get_instance( uint_fast8_t flags ){
     return lsr_instance;
 }
 
-// Deconstructor
-
 Linux_Syscall_Reader::~Linux_Syscall_Reader(){
-
+    // Deconstructor
     stop_reading();
     clear_file( FTRACE_DIR + TRACE );   // Theoretically, this will clear trace_pipe
     set_self_filter( false );
@@ -45,45 +40,37 @@ Linux_Syscall_Reader::~Linux_Syscall_Reader(){
     set_exit( false );
 }
 
-uint_fast8_t Linux_Syscall_Reader::set_reading( bool on ){
+uint_fast8_t Linux_Syscall_Reader::set_reading( bool on ) {
 
     return on ? start_reading() : stop_reading();
 }
 
-uint_fast8_t Linux_Syscall_Reader::start_reading(){
+uint_fast8_t Linux_Syscall_Reader::start_reading() {
 
-    if ( !is_reading() )
-    {
+    if ( !is_reading() ) {
         update_filter();
 
         trace_pipe_stream.open( FTRACE_DIR + TRACE_PIPE );
 
-        if ( write_to_file ( FTRACE_DIR + TRACING_ON, "1" ) && trace_pipe_stream.is_open() )
-        {
+        if ( write_to_file ( FTRACE_DIR + TRACING_ON, "1" ) && trace_pipe_stream.is_open() ) {
             status |= READING_ON;
-        }
-        else
-        {
-            std::cerr << "Could not start reading." << std::endl;
+        } else {
+            std::cerr << error << "start_reading() function failed" << std::endl;
         }
     }
 
     return status;
 }
 
-uint_fast8_t Linux_Syscall_Reader::stop_reading(){
+uint_fast8_t Linux_Syscall_Reader::stop_reading() {
 
-    if ( is_reading() )
-    {
+    if ( is_reading() ) {
         trace_pipe_stream.close();
 
-        if( write_to_file ( FTRACE_DIR + TRACING_ON, "0" ) && !trace_pipe_stream.is_open() )
-        {
+        if( write_to_file ( FTRACE_DIR + TRACING_ON, "0" ) && !trace_pipe_stream.is_open() ) {
             status &= ~READING_ON;
-        }
-        else
-        {
-            std::cerr << "Could not stop reading." << std::endl;
+        } else {
+            std::cerr << error << "stop_reading() function failed" << std::endl;
         }
     } 
 
@@ -113,7 +100,7 @@ uint_fast8_t Linux_Syscall_Reader::set_self_filter( bool filter ){
     return status;
 }
 
-uint_fast8_t Linux_Syscall_Reader::ftrace_status(){
+uint_fast8_t Linux_Syscall_Reader::ftrace_status() {
 
     uint_fast8_t ftrace_status = 0x00;
     uint_fast8_t tmp_status = 0x00;
@@ -202,15 +189,15 @@ bool Linux_Syscall_Reader::is_reading(){
     return ( status & READING_ON );
 }
 
-Sensor_Data * Linux_Syscall_Reader::read_syscall(){
-
+Sensor_Data * Linux_Syscall_Reader::read_syscall() {
+    // This function reads the data from the trace files
     string tmp = "";
     Sensor_Data * data = NULL;
 
-    if ( is_reading() && trace_pipe_stream.is_open() && !trace_pipe_stream.eof() )
-    {
+    if ( is_reading() && trace_pipe_stream.is_open() && !trace_pipe_stream.eof() ) {
         std::getline( trace_pipe_stream, tmp );
         data = new Sensor_Data( os, data_type, tmp, "" );
+        std::cout << tmp << std::endl;
     }
 
     return data; 

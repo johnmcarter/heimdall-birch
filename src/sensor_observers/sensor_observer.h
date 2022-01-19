@@ -16,14 +16,12 @@
 #include <thread>
 
 #include "sensor_data/sensor_data.h"
-#include "queues/readerwriterqueue.h"
+#include "utils/readerwriterqueue.h"
 
 using std::thread;
 using std::string;
 
 typedef moodycamel::ReaderWriterQueue<Sensor_Data> queue;
-
-//const uint_fast32_t OBSERVER_QUEUE_SIZE = 100; // CHECK: As with include/sensors/sensor.h, this figure is arbitrary for now. CURRENTLY UNUSED.
 
 class Sensor_Observer{
 

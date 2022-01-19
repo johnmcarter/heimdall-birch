@@ -2,9 +2,11 @@
  *  File Name : launcher.cpp
  *  
  *  Created: 2021/12/15 18:31:55
- *  Last modified: 2022/01/14 15:01:42
+ *  Last modified: 2022/01/18 22:19:46
  *  Created By : ronin-zero (浪人ー無)
  *  Modified By : John Carter
+ *  This program accepts the command line input and launches
+ *  the syscall-sensor with the specified parameters.
  */
 
 #include <iostream>
@@ -19,15 +21,11 @@
 #include "sensor_command_line_utils/command_line_parser.h"
 #include "sensor_manager/sensor_manager.h"
 #include "utils/ascii_operations.h"
+#include "utils/constants.h"
 
 std::vector<std::string> opt_flags = { "-n", "-p", "-c", "-f", "-t", "-s", "-a", };
 
-const std::string pipe_name = "/var/run/sensor.pipe";
-const std::string error = "[\033[31mERROR\033[0m] ";
-const std::string info = "[\033[32mINFO\033[0m] ";
-
 std::string flag_string( uint_fast8_t flags );
-//std::string get_program_name( char* arg );
 
 void start( Command_Line_Parser & parser );
 void stop( Command_Line_Parser & parser );
@@ -311,7 +309,7 @@ void stop ( Command_Line_Parser & parser ){
     /* Stop the syscall-sensor */
 
     if ( !is_running( parser.get_program_name() ) ) {
-        std::cout << error << "syscall-sensor stop failed: The sensor is not running." << std::endl;
+        std::cout << error << "Stop command failed: The sensor is not running." << std::endl;
     } else {
         int32_t fd = open( pipe_name.c_str(), O_WRONLY );
         std::string stop = "STOP";

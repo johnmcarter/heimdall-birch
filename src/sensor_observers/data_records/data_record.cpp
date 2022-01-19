@@ -11,12 +11,11 @@
 
 #include "data_record.h"
 
-Data_Record::Data_Record( const std::smatch matches, uint_fast8_t settings_flags, std::string sep ){
-
+Data_Record::Data_Record( const std::smatch matches, uint_fast8_t settings_flags, std::string sep ) {
+    
     record_fields = matches;
     flags = settings_flags;
     separator = sep;
-    std::cout << "data record " << raw_string() << std::endl;
 }
 
 std::string Data_Record::raw_string() const{

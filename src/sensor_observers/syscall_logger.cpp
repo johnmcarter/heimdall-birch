@@ -10,6 +10,7 @@
  */
 
 #include "syscall_logger.h"
+#include "utils/constants.h"
 
 std::regex Syscall_Logger::syscall_regex( syscall_pattern );
 
@@ -124,8 +125,7 @@ void Syscall_Logger::remove_stream( Data_Stream * stream ){
 
 void Syscall_Logger::process(){
 
-    while ( processing )
-    {
+    while ( processing ) {
         Sensor_Data data_point;
 
         // try_dequeue attempts to remove the next
@@ -137,16 +137,9 @@ void Syscall_Logger::process(){
         // the notify_observers method in
         // Syscall_Sensor.cpp.
 
-        if ( data_queue.try_dequeue( data_point ) )
-        {
+        if ( data_queue.try_dequeue( data_point ) ) {
             process_data_point( data_point );
-        }
-
-        // As of April 9, 2017, I commented this out because it's apparently causing problems.
-        // As of April 12, 2017, The problem has persisted despite being commented out, so I'm
-        // putting it back in.
-        else
-        {
+        } else {
             std::this_thread::yield();
         }
     }
@@ -165,7 +158,7 @@ void Syscall_Logger::process_data_point( Sensor_Data data ){
         Syscall_Record syscall_record( syscall_fields );
         send_data( syscall_record );
     } else {
-        std::cerr << "Error!  Line didn't match regex.  Line: " << tmp_data << std::endl;
+        std::cerr << error << "Line: " << tmp_data << " didn't match regex" << std::endl;
     }
 
 }
@@ -193,8 +186,7 @@ void Syscall_Logger::process_remaining_queue(){
 
     Sensor_Data data_point;
 
-    while ( data_queue.try_dequeue( data_point ) )
-    {
+    while ( data_queue.try_dequeue( data_point ) ) {
         process_data_point( data_point );
     }
 }

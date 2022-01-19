@@ -13,7 +13,7 @@
 
 #include <string>
 
-namespace Linux_Syscall_Constants{
+namespace Linux_Syscall_Constants {
 
     static const std::string TASK_REG           =   "([[:graph:][:space:]]*)";
     static const std::string PID_REG            =   "([[:digit:]]+)";
